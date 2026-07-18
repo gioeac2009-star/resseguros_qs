@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impacto do Resseguro - Quota Parte</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --surface-color: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #059669;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .controls {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .slider-group {
+            flex-grow: 1;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type=range] {
+            width: 100%;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-muted);
+            padding: 0.5rem 0;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .scenario-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            background-color: var(--bg-color);
+        }
+
+        .scenario-card.highlight {
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
+        }
+
+        .scenario-header {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .scenario-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            min-height: 40px;
+        }
+
+        .kpi-group {
+            margin-bottom: 0.4rem;
+        }
+
+        .kpi-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .kpi-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .kpi-value.main {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .kpi-value.success {
+            color: var(--success);
+        }
+
+        .chart-container {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            height: 350px;
+            background-color: var(--bg-color);
+        }
+        
+        .insight-box {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: #1e3a8a;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Impacto do Resseguro (Quota Parte)</h1>
+            <p class="subtitle">
+                <strong>Carteira de Seguros de Vida (Cobertura de Morte) - Base de 1 ano de prêmio emitido.</strong><br>
+                Comparativo entre a emissão apenas de apólices com IS Menor que 1M (Sem Resseguro) 
+                vs. expansão para toda a carteira, incluindo IS Maior que 1M (Com Resseguro).
+            </p>
+        </header>
+
+        <div class="controls">
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>Cessão do Quota Parte (%)</span>
+                    <span id="qsValueDisplay">50%</span>
+                </div>
+                <input type="range" id="qsSlider" min="0" max="95" value="50" step="5">
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); max-width: 300px;">
+                Ajuste o percentual cedido ao ressegurador para simular o <strong>Cenário 2</strong>.
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('premio')">Prêmio</button>
+            <button class="tab-btn" onclick="openTab('sinistro')">Sinistro</button>
+            <button class="tab-btn" onclick="openTab('resultado')">Resultado</button>
+        </div>
+
+        <!-- TAB: PRÊMIO -->
+        <div id="premio" class="tab-content active">
+            <div class="insight-box">
+                Acessar o mercado de grandes riscos (IS > 1M) aumenta significativamente o Prêmio Bruto total. 
+                Com o resseguro, parte desse prêmio é cedida, mas o montante retido pode superar o cenário sem resseguro.
+            </div>
+            
+            <div class="scenario-grid">
+                <div class="scenario-card">
+                    <div class="scenario-header">Cenário 1: Sem Resseguro</div>
+                    <div class="scenario-desc">Emissão <strong>apenas</strong> de apólices IS < 1M.</div>
+                    
+                    <div class="kpi-group">
+                        <div class="kpi-label">Qtd Apólices Emitidas</div>
+                        <div class="kpi-value">17.300</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Prêmio Bruto Total</div>
+                        <div class="kpi-value">R$ 3,60M</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Prêmio Cedido</div>
+                        <div class="kpi-value">R$ 0,00M</div>
+                    </div>
+                    <div class="kpi-group mt-auto">
+                        <div class="kpi-label">Prêmio Retido</div>
+                        <div class="kpi-value main">R$ 3,60M</div>
+                    </div>
+                </div>
+
+                <div class="scenario-card highlight">
+                    <div class="scenario-header">Cenário 2: Com Resseguro</div>
+                    <div class="scenario-desc">Emissão de <strong>todas</strong> as apólices (IS < 1M e IS > 1M).</div>
+                    
+                    <div class="kpi-group">
+                        <div class="kpi-label">Qtd Apólices Emitidas</div>
+                        <div class="kpi-value">33.100</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Prêmio Bruto Total</div>
+                        <div class="kpi-value">R$ 13,40M</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Prêmio Cedido (<span class="qs-text"></span>)</div>
+                        <div class="kpi-value" id="pCedido">R$ 0,00M</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Prêmio Retido</div>
+                        <div class="kpi-value main" id="pRetido">R$ 13,40M</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="chartPremio"></canvas>
+            </div>
+        </div>
+
+        <!-- TAB: SINISTRO -->
+        <div id="sinistro" class="tab-content">
+            <div class="insight-box">
+                Apesar das apólices > 1M trazerem mais prêmio, elas trazem sinistros de alta severidade.
+                O resseguro protege o balanço, absorvendo parte desses sinistros e mantendo o Sinistro Retido controlado.
+            </div>
+
+            <div class="scenario-grid">
+                <div class="scenario-card">
+                    <div class="scenario-header">Cenário 1: Sem Resseguro</div>
+                    <div class="scenario-desc">Emissão <strong>apenas</strong> de apólices IS < 1M.</div>
+                    
+                    <div class="kpi-group">
+                        <div class="kpi-label">Qtd Apólices Sinistradas</div>
+                        <div class="kpi-value">2</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Sinistro Bruto Total</div>
+                        <div class="kpi-value">R$ 0,26M</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Sinistro Recuperado</div>
+                        <div class="kpi-value">R$ 0,00M</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Sinistro Retido</div>
+                        <div class="kpi-value main">R$ 0,26M</div>
+                    </div>
+                </div>
+
+                <div class="scenario-card highlight">
+                    <div class="scenario-header">Cenário 2: Com Resseguro</div>
+                    <div class="scenario-desc">Emissão de <strong>todas</strong> as apólices (IS < 1M e IS > 1M).</div>
+                    
+                    <div class="kpi-group">
+                        <div class="kpi-label">Qtd Apólices Sinistradas</div>
+                        <div class="kpi-value">4</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Sinistro Bruto Total</div>
+                        <div class="kpi-value">R$ 3,26M</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Sinistro Recuperado (<span class="qs-text"></span>)</div>
+                        <div class="kpi-value" id="sRecuperado">R$ 0,00M</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Sinistro Retido</div>
+                        <div class="kpi-value main" id="sRetido">R$ 3,26M</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="chartSinistro"></canvas>
+            </div>
+        </div>
+
+        <!-- TAB: RESULTADO -->
+        <div id="resultado" class="tab-content">
+            <div class="insight-box">
+                O Resultado Retido evidencia a viabilidade financeira: emitir grandes riscos com resseguro pode gerar um 
+                <strong>lucro retido absoluto maior</strong> do que operar apenas na carteira de pequenos riscos.
+            </div>
+
+            <div class="scenario-grid">
+                <div class="scenario-card">
+                    <div class="scenario-header">Cenário 1: Sem Resseguro</div>
+                    <div class="scenario-desc">Emissão <strong>apenas</strong> de apólices IS < 1M.</div>
+                    
+                    <div class="kpi-group">
+                        <div class="kpi-label">Prêmio Retido</div>
+                        <div class="kpi-value">R$ 3,60M</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Sinistro Retido</div>
+                        <div class="kpi-value">R$ 0,26M</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Resultado Retido (Lucro)</div>
+                        <div class="kpi-value main success">R$ 3,34M</div>
+                    </div>
+                </div>
+
+                <div class="scenario-card highlight">
+                    <div class="scenario-header">Cenário 2: Com Resseguro</div>
+                    <div class="scenario-desc">Emissão de <strong>todas</strong> as apólices (IS < 1M e IS > 1M).</div>
+                    
+                    <div class="kpi-group">
+                        <div class="kpi-label">Prêmio Retido</div>
+                        <div class="kpi-value" id="rPremio">R$ 13,40M</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Sinistro Retido</div>
+                        <div class="kpi-value" id="rSinistro">R$ 3,26M</div>
+                    </div>
+                    <div class="kpi-group">
+                        <div class="kpi-label">Resultado Retido (Lucro)</div>
+                        <div class="kpi-value main success" id="rResultado">R$ 10,14M</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="chartResultado"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Data Configuration
+        // Scenario 1: Only < 1M
+        const SCENARIO1_PREMIO = 3600200;
+        const SCENARIO1_SINISTRO = 260000;
+        const SCENARIO1_RESULTADO = SCENARIO1_PREMIO - SCENARIO1_SINISTRO;
+
+        // Scenario 2: All Policies (<1M + >1M)
+        const PREMIO_MAIOR_1M = 9800700;
+        const SINISTRO_MAIOR_1M = 3000000;
+        
+        const SCENARIO2_PREMIO_BRUTO = SCENARIO1_PREMIO + PREMIO_MAIOR_1M; // 13.400.900
+        const SCENARIO2_SINISTRO_BRUTO = SCENARIO1_SINISTRO + SINISTRO_MAIOR_1M; // 3.260.000
+
+        // Format to Millions
+        const formatM = (value) => `R$ ${(value / 1000000).toFixed(2)}M`.replace('.', ',');
+
+        // Elements
+        const slider = document.getElementById('qsSlider');
+        const qsDisplay = document.getElementById('qsValueDisplay');
+        const qsTexts = document.querySelectorAll('.qs-text');
+
+        let chartPremio, chartSinistro, chartResultado;
+
+        function initCharts() {
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#64748b';
+            
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { boxWidth: 12 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [4, 4] },
+                        title: {
+                            display: true,
+                            text: 'Montante (R$ Milhões)'
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            };
+
+            // Chart Prêmio
+            const ctxPremio = document.getElementById('chartPremio').getContext('2d');
+            chartPremio = new Chart(ctxPremio, {
+                type: 'bar',
+                data: {
+                    labels: ['Cenário 1 (Sem Resseguro)', 'Cenário 2 (Com Resseguro)'],
+                    datasets: [
+                        {
+                            label: 'Prêmio Retido',
+                            data: [SCENARIO1_PREMIO/1e6, SCENARIO2_PREMIO_BRUTO/1e6],
+                            backgroundColor: '#2563eb',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Prêmio Cedido',
+                            data: [0, 0],
+                            backgroundColor: '#93c5fd',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: { ...commonOptions, scales: { ...commonOptions.scales, x: { stacked: true }, y: { stacked: true } } }
+            });
+
+            // Chart Sinistro
+            const ctxSinistro = document.getElementById('chartSinistro').getContext('2d');
+            chartSinistro = new Chart(ctxSinistro, {
+                type: 'bar',
+                data: {
+                    labels: ['Cenário 1 (Sem Resseguro)', 'Cenário 2 (Com Resseguro)'],
+                    datasets: [
+                        {
+                            label: 'Sinistro Retido',
+                            data: [SCENARIO1_SINISTRO/1e6, SCENARIO2_SINISTRO_BRUTO/1e6],
+                            backgroundColor: '#ef4444',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Sinistro Recuperado',
+                            data: [0, 0],
+                            backgroundColor: '#fca5a5',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: { ...commonOptions, scales: { ...commonOptions.scales, x: { stacked: true }, y: { stacked: true } } }
+            });
+
+            // Chart Resultado
+            const ctxResultado = document.getElementById('chartResultado').getContext('2d');
+            chartResultado = new Chart(ctxResultado, {
+                type: 'bar',
+                data: {
+                    labels: ['Cenário 1 (Sem Resseguro)', 'Cenário 2 (Com Resseguro)'],
+                    datasets: [
+                        {
+                            label: 'Resultado Retido (Lucro)',
+                            data: [SCENARIO1_RESULTADO/1e6, (SCENARIO2_PREMIO_BRUTO - SCENARIO2_SINISTRO_BRUTO)/1e6],
+                            backgroundColor: '#059669',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: commonOptions
+            });
+        }
+
+        function updateCalculations() {
+            const qsPerc = parseInt(slider.value) / 100;
+            
+            qsDisplay.textContent = `${slider.value}%`;
+            qsTexts.forEach(el => el.textContent = `${slider.value}%`);
+
+            // Scenario 2 Calculations
+            const premioCedido = SCENARIO2_PREMIO_BRUTO * qsPerc;
+            const premioRetido = SCENARIO2_PREMIO_BRUTO - premioCedido;
+
+            const sinistroRecuperado = SCENARIO2_SINISTRO_BRUTO * qsPerc;
+            const sinistroRetido = SCENARIO2_SINISTRO_BRUTO - sinistroRecuperado;
+
+            const resultadoRetido = premioRetido - sinistroRetido;
+
+            // Update DOM Values Scenario 2
+            document.getElementById('pCedido').textContent = formatM(premioCedido);
+            document.getElementById('pRetido').textContent = formatM(premioRetido);
+            
+            document.getElementById('sRecuperado').textContent = formatM(sinistroRecuperado);
+            document.getElementById('sRetido').textContent = formatM(sinistroRetido);
+
+            document.getElementById('rPremio').textContent = formatM(premioRetido);
+            document.getElementById('rSinistro').textContent = formatM(sinistroRetido);
+            document.getElementById('rResultado').textContent = formatM(resultadoRetido);
+
+            // Update Charts
+            // Premio
+            chartPremio.data.datasets[0].data[1] = premioRetido / 1e6;
+            chartPremio.data.datasets[1].data[1] = premioCedido / 1e6;
+            chartPremio.update();
+
+            // Sinistro
+            chartSinistro.data.datasets[0].data[1] = sinistroRetido / 1e6;
+            chartSinistro.data.datasets[1].data[1] = sinistroRecuperado / 1e6;
+            chartSinistro.update();
+
+            // Resultado
+            chartResultado.data.datasets[0].data[1] = resultadoRetido / 1e6;
+            chartResultado.update();
+        }
+
+        function openTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        slider.addEventListener('input', updateCalculations);
+
+        window.onload = () => {
+            initCharts();
+            updateCalculations();
+        };
+    </script>
+</body>
+</html>
