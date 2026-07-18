@@ -14,6 +14,7 @@
     <style>
         :root {
             --bg-color: #ffffff;
+            --navbar-bg: rgba(255, 255, 255, 0.6);
             --surface-color: #f8fafc;
             --border-color: #e2e8f0;
             --text-main: #0f172a;
@@ -25,6 +26,7 @@
 
         [data-theme="dark"] {
             --bg-color: #0f172a;
+            --navbar-bg: rgba(15, 23, 42, 0.6);
             --surface-color: #1e293b;
             --border-color: #334155;
             --text-main: #f8fafc;
@@ -45,7 +47,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.5;
-            padding: 2rem;
+            padding: 6rem 2rem 2rem;
             display: flex;
             justify-content: center;
             transition: background-color 0.3s, color 0.3s;
@@ -53,14 +55,33 @@
 
         /* Navbar & Menu */
         .navbar {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             display: flex;
             justify-content: flex-end;
+            align-items: center;
             padding: 1rem 2rem;
             z-index: 1000;
+            background-color: var(--navbar-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: background-color 0.3s;
+        }
+
+        .navbar-brand {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-decoration: none;
+            letter-spacing: -0.025em;
+            text-align: center;
         }
 
         .hamburger-btn {
@@ -118,7 +139,7 @@
         }
 
         .theme-toggle-container {
-            margin-top: auto;
+            margin-top: 2rem;
             border-top: 1px solid var(--border-color);
             padding-top: 1rem;
         }
@@ -157,7 +178,7 @@
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
             letter-spacing: -0.025em;
@@ -319,6 +340,7 @@
 
     <!-- Navbar -->
     <div class="navbar">
+        <a href="index.html" class="navbar-brand">Resseguro Playground</a>
         <button class="hamburger-btn" onclick="toggleMenu()">☰</button>
     </div>
 
@@ -557,7 +579,8 @@
 
         function initCharts() {
             Chart.defaults.font.family = "'Inter', sans-serif";
-            Chart.defaults.color = '#64748b';
+            // Lighter default text color for dark mode visibility
+            Chart.defaults.color = '#94a3b8'; 
             
             const commonOptions = {
                 responsive: true,
@@ -571,7 +594,10 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { borderDash: [4, 4] },
+                        grid: { 
+                            borderDash: [4, 4],
+                            color: 'rgba(150, 150, 150, 0.2)' // Visível em ambos os modos
+                        },
                         title: {
                             display: true,
                             text: 'Montante (R$ Milhões)'
@@ -604,7 +630,7 @@
                         }
                     ]
                 },
-                options: { ...commonOptions, scales: { ...commonOptions.scales, x: { stacked: true }, y: { stacked: true } } }
+                options: { ...commonOptions, scales: { ...commonOptions.scales, x: { stacked: true }, y: { ...commonOptions.scales.y, stacked: true } } }
             });
 
             // Chart Sinistro
@@ -628,7 +654,7 @@
                         }
                     ]
                 },
-                options: { ...commonOptions, scales: { ...commonOptions.scales, x: { stacked: true }, y: { stacked: true } } }
+                options: { ...commonOptions, scales: { ...commonOptions.scales, x: { stacked: true }, y: { ...commonOptions.scales.y, stacked: true } } }
             });
 
             // Chart Resultado

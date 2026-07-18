@@ -19,6 +19,7 @@
             --primary: #2563eb;
             --primary-hover: #1d4ed8;
             --secondary: #0ea5e9;
+            --bg-gradient: linear-gradient(135deg, #ffffff, #f0f9ff, #e0f2fe, #f8fafc);
         }
 
         [data-theme="dark"] {
@@ -30,6 +31,7 @@
             --primary: #3b82f6;
             --primary-hover: #60a5fa;
             --secondary: #38bdf8;
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e3a8a, #172554, #0f172a);
         }
 
         * {
@@ -40,13 +42,21 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
+            background: var(--bg-gradient);
+            background-size: 300% 300%;
+            animation: gradientShift 15s ease infinite;
             color: var(--text-main);
             line-height: 1.6;
-            padding: 4rem 2rem;
+            padding: 4rem 2rem 2rem;
             display: flex;
             justify-content: center;
-            transition: background-color 0.3s, color 0.3s;
+            transition: color 0.3s;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Navbar & Menu */
@@ -116,7 +126,7 @@
         }
 
         .theme-toggle-container {
-            margin-top: auto;
+            margin-top: 2rem;
             border-top: 1px solid var(--border-color);
             padding-top: 1rem;
         }
@@ -155,7 +165,7 @@
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
             letter-spacing: -0.025em;
