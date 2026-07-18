@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resseguro Playground</title>
+    <title>Excesso de Danos (XL) - Resseguro</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,9 +16,9 @@
             --border-color: #e2e8f0;
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --secondary: #0ea5e9;
+            --primary: #9d174d;
+            --primary-hover: #be185d;
+            --success: #059669;
         }
 
         [data-theme="dark"] {
@@ -27,9 +27,9 @@
             --border-color: #334155;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --primary: #3b82f6;
-            --primary-hover: #60a5fa;
-            --secondary: #38bdf8;
+            --primary: #f43f5e;
+            --primary-hover: #fb7185;
+            --success: #10b981;
         }
 
         * {
@@ -42,8 +42,8 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            line-height: 1.6;
-            padding: 4rem 2rem;
+            line-height: 1.5;
+            padding: 2rem;
             display: flex;
             justify-content: center;
             transition: background-color 0.3s, color 0.3s;
@@ -111,7 +111,7 @@
         }
 
         .menu-link:hover {
-            background-color: rgba(59, 130, 246, 0.1);
+            background-color: rgba(157, 23, 77, 0.1);
             color: var(--primary);
         }
 
@@ -140,121 +140,109 @@
 
         .theme-toggle-btn:hover {
             border-color: var(--primary);
-            background-color: rgba(59, 130, 246, 0.1);
+            background-color: rgba(157, 23, 77, 0.1);
         }
 
         .container {
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
             margin-top: 2rem;
         }
 
         header {
-            text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
         h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            letter-spacing: -0.025em;
-            color: var(--text-main);
-        }
-
-        .intro-text {
-            color: var(--text-muted);
-            font-size: 1.125rem;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .card {
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2.5rem;
-            background-color: var(--surface-color);
-            transition: all 0.2s ease;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-
-        .card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.1), 0 10px 10px -5px rgba(37, 99, 235, 0.04);
-            transform: translateY(-4px);
-        }
-
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
         }
 
-        .card-desc {
+        p.subtitle {
             color: var(--text-muted);
             font-size: 1rem;
+        }
+
+        .construction-banner {
+            background-color: rgba(157, 23, 77, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
             margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .construction-icon {
+            font-size: 2.5rem;
+        }
+
+        .construction-text h3 {
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .controls {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .slider-group {
             flex-grow: 1;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            align-self: flex-start;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
         }
 
-        .badge-proportional {
-            background-color: #dbeafe;
-            color: #1e40af;
+        input[type=range] {
+            width: 100%;
+            accent-color: var(--primary);
         }
 
-        .badge-non-proportional {
-            background-color: #fce7f3;
-            color: #9d174d;
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.6;
         }
-        
-        .btn {
-            display: inline-flex;
+
+        .scenario-card {
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 2.5rem 1.5rem;
+            background-color: var(--bg-color);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 0.875rem 1.5rem;
-            background-color: var(--primary);
-            color: white;
-            font-weight: 500;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: background-color 0.2s;
-            margin-top: auto;
-            width: 100%;
+            color: var(--text-muted);
+        }
+        
+        .mockup-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
         }
 
-        .card:hover .btn {
-            background-color: var(--primary-hover);
-        }
     </style>
 </head>
 <body>
@@ -269,7 +257,7 @@
         <button class="hamburger-btn" style="position: absolute; top: 1rem; right: 2rem; padding: 0.5rem 1rem;" onclick="toggleMenu()">✕</button>
         <a href="index.html" class="menu-link">🏠 Página Inicial</a>
         <a href="quota_parte.html" class="menu-link">⚖️ Quota Parte</a>
-        <a href="excesso_danos.html" class="menu-link">🛡️ Excesso de Danos</a>
+        <a href="excesso_danos.html" class="menu-link" style="color: var(--primary);">🛡️ Excesso de Danos</a>
         
         <div class="theme-toggle-container">
             <button class="theme-toggle-btn" id="themeBtn" onclick="toggleTheme()">🌙 Modo Escuro</button>
@@ -278,49 +266,58 @@
 
     <div class="container">
         <header>
-            <h1>Resseguro Playground</h1>
-            <p class="intro-text">
-                Bem-vindo ao ambiente interativo de simulação de resseguro. 
-                Neste espaço, você pode visualizar e comparar o impacto financeiro e o gerenciamento 
-                de risco de diferentes contratos de resseguro aplicados a uma carteira de seguros real.
+            <h1>Impacto do Resseguro (Excesso de Danos - XL)</h1>
+            <p class="subtitle">
+                <strong>Carteira de Seguros de Vida (Cobertura de Morte)</strong><br>
+                Neste modelo Não Proporcional, a seguradora define uma "Prioridade" (retenção máxima por evento ou risco) e o ressegurador arca com o excedente até um certo limite.
             </p>
         </header>
 
-        <div class="cards-grid">
-            <!-- Quota Parte -->
-            <a href="quota_parte.html" class="card">
-                <div class="badge badge-proportional">Proporcional</div>
-                <div class="card-icon">⚖️</div>
-                <div class="card-title">Quota Parte (QS)</div>
-                <div class="card-desc">
-                    Simule a cessão proporcional de prêmios e sinistros. Descubra como o tratado Quota Parte ajuda 
-                    a seguradora a acessar o mercado de grandes riscos (IS > 1M) limitando sua exposição financeira.
-                </div>
-                <div class="btn">Acessar Simulador</div>
-            </a>
-
-            <!-- Excesso de Danos -->
-            <a href="excesso_danos.html" class="card">
-                <div class="badge badge-non-proportional">Não Proporcional</div>
-                <div class="card-icon">🛡️</div>
-                <div class="card-title">Excesso de Danos (XL)</div>
-                <div class="card-desc">
-                    Proteja a carteira contra eventos catastróficos ou sinistros de alta severidade. 
-                    Neste modelo não proporcional, a seguradora define uma linha de prioridade e o ressegurador cobre os excessos.
-                </div>
-                <div class="btn">Acessar Simulador</div>
-            </a>
+        <div class="construction-banner">
+            <div class="construction-icon">🚧</div>
+            <div class="construction-text">
+                <h3>Página em Construção</h3>
+                <p>O simulador de Excesso de Danos (XL) será implementado em breve. A interface abaixo é apenas um protótipo visual (Mockup) da disposição dos elementos.</p>
+            </div>
         </div>
+
+        <div class="controls">
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>Prioridade (R$)</span>
+                    <span>R$ 1.000.000</span>
+                </div>
+                <input type="range" min="0" max="100" value="50">
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); max-width: 300px;">
+                Define o gatilho a partir do qual o ressegurador começa a pagar os sinistros.
+            </div>
+        </div>
+
+        <div class="scenario-grid">
+            <div class="scenario-card">
+                <div class="mockup-icon">📊</div>
+                <div>Visualização de Sinistros Individuais</div>
+                <div style="font-size: 0.8rem; margin-top: 0.5rem;">Gráfico demonstrando os sinistros que ultrapassam a prioridade.</div>
+            </div>
+
+            <div class="scenario-card">
+                <div class="mockup-icon">💰</div>
+                <div>Comparativo de Custo</div>
+                <div style="font-size: 0.8rem; margin-top: 0.5rem;">Custo do prêmio de resseguro XL vs. Sinistros Recuperados.</div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // Init Theme
+        // Theme Init
         const currentTheme = localStorage.getItem('theme') || 'light';
         const themeBtn = document.getElementById('themeBtn');
         
         if (currentTheme === 'dark') {
             document.body.setAttribute('data-theme', 'dark');
-            themeBtn.textContent = '☀️ Modo Claro';
+            if (themeBtn) themeBtn.textContent = '☀️ Modo Claro';
         }
 
         // Menu Toggle
@@ -334,11 +331,11 @@
             if (isDark) {
                 document.body.removeAttribute('data-theme');
                 localStorage.setItem('theme', 'light');
-                themeBtn.textContent = '🌙 Modo Escuro';
+                if (themeBtn) themeBtn.textContent = '🌙 Modo Escuro';
             } else {
                 document.body.setAttribute('data-theme', 'dark');
                 localStorage.setItem('theme', 'dark');
-                themeBtn.textContent = '☀️ Modo Claro';
+                if (themeBtn) themeBtn.textContent = '☀️ Modo Claro';
             }
         }
     </script>
