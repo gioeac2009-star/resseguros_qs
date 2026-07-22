@@ -8,30 +8,39 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         :root {
             --bg-color: #ffffff;
-            --navbar-bg: rgba(255, 255, 255, 0.6);
             --surface-color: #f8fafc;
             --border-color: #e2e8f0;
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --primary: #9d174d;
+            --primary: #9d174d; 
             --primary-hover: #be185d;
+            --secondary: #ec4899;
             --success: #059669;
+            --danger: #dc2626;
+            --navbar-bg: rgba(255, 255, 255, 0.6);
+            --menu-bg: rgba(255, 255, 255, 0.85);
+            --tab-hover: rgba(157, 23, 77, 0.1);
         }
 
         [data-theme="dark"] {
             --bg-color: #0f172a;
-            --navbar-bg: rgba(15, 23, 42, 0.6);
             --surface-color: #1e293b;
             --border-color: #334155;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --primary: #f43f5e;
             --primary-hover: #fb7185;
+            --secondary: #fbcfe8;
             --success: #10b981;
+            --danger: #ef4444;
+            --navbar-bg: rgba(15, 23, 42, 0.6);
+            --menu-bg: rgba(15, 23, 42, 0.85);
+            --tab-hover: rgba(244, 63, 94, 0.1);
         }
 
         * {
@@ -44,8 +53,8 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            line-height: 1.5;
-            padding: 6rem 2rem 2rem;
+            line-height: 1.6;
+            padding: 4rem 2rem 2rem;
             display: flex;
             justify-content: center;
             transition: background-color 0.3s, color 0.3s;
@@ -59,15 +68,12 @@
             width: 100%;
             display: flex;
             justify-content: flex-end;
-            align-items: center;
             padding: 1rem 2rem;
             z-index: 1000;
             background-color: var(--navbar-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            transition: background-color 0.3s;
         }
 
         .navbar-brand {
@@ -79,7 +85,6 @@
             color: var(--text-main);
             text-decoration: none;
             letter-spacing: -0.025em;
-            text-align: center;
         }
 
         .hamburger-btn {
@@ -96,9 +101,7 @@
             transition: all 0.2s;
         }
 
-        .hamburger-btn:hover {
-            border-color: var(--primary);
-        }
+        .hamburger-btn:hover { border-color: var(--primary); }
 
         .menu-overlay {
             position: fixed;
@@ -106,7 +109,9 @@
             right: -300px;
             width: 300px;
             height: 100vh;
-            background-color: var(--surface-color);
+            background-color: var(--menu-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-left: 1px solid var(--border-color);
             box-shadow: -5px 0 15px rgba(0,0,0,0.1);
             transition: right 0.3s ease;
@@ -117,9 +122,7 @@
             gap: 1rem;
         }
 
-        .menu-overlay.active {
-            right: 0;
-        }
+        .menu-overlay.active { right: 0; }
 
         .menu-link {
             color: var(--text-main);
@@ -132,7 +135,7 @@
         }
 
         .menu-link:hover {
-            background-color: rgba(157, 23, 77, 0.1);
+            background-color: var(--tab-hover);
             color: var(--primary);
         }
 
@@ -161,9 +164,10 @@
 
         .theme-toggle-btn:hover {
             border-color: var(--primary);
-            background-color: rgba(157, 23, 77, 0.1);
+            background-color: var(--tab-hover);
         }
 
+        /* Layout Container */
         .container {
             width: 100%;
             max-width: 1000px;
@@ -183,29 +187,16 @@
             letter-spacing: -0.025em;
         }
 
-        p.subtitle {
-            color: var(--text-muted);
-            font-size: 1rem;
-        }
+        p.subtitle { color: var(--text-muted); font-size: 1rem; }
 
-        .construction-banner {
-            background-color: rgba(157, 23, 77, 0.1);
+        .insight-box {
+            background-color: var(--tab-hover);
             border-left: 4px solid var(--primary);
-            padding: 1.5rem;
-            border-radius: 0 8px 8px 0;
+            padding: 1rem;
+            border-radius: 0 4px 4px 0;
             margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .construction-icon {
-            font-size: 2.5rem;
-        }
-
-        .construction-text h3 {
-            color: var(--primary);
-            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+            color: var(--text-main);
         }
 
         .controls {
@@ -215,15 +206,13 @@
             padding: 1.5rem;
             margin-bottom: 2rem;
             display: flex;
-            align-items: center;
-            gap: 2rem;
-            opacity: 0.6;
-            pointer-events: none;
+            flex-direction: column;
+            gap: 1.5rem;
         }
+        
+        .controls-row { display: flex; gap: 2rem; }
 
-        .slider-group {
-            flex-grow: 1;
-        }
+        .slider-group { flex-grow: 1; width: 50%; }
 
         .slider-label {
             display: flex;
@@ -234,36 +223,123 @@
 
         input[type=range] {
             width: 100%;
+            cursor: pointer;
             accent-color: var(--primary);
         }
 
-        .scenario-grid {
+        /* Tabs System */
+        .tabs {
+            display: flex;
+            gap: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-muted);
+            padding: 0.5rem 0;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .tab-btn:hover { color: var(--text-main); }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboards & Charts */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .kpi-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .kpi-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        
+        .kpi-value.green { color: var(--success); }
+        .kpi-value.red { color: var(--danger); }
+        .kpi-value.primary { color: var(--primary); }
+
+        .charts-grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
             margin-bottom: 2rem;
-            opacity: 0.6;
-        }
-
-        .scenario-card {
-            border: 1px dashed var(--border-color);
-            border-radius: 8px;
-            padding: 2.5rem 1.5rem;
-            background-color: var(--bg-color);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
         }
         
-        .mockup-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+        .charts-grid-1 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
+        .chart-container {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            height: 380px;
+            background-color: var(--surface-color);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chart-container h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            text-align: center;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            flex-grow: 1;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .charts-grid-2 { grid-template-columns: 1fr; }
+            .controls-row { flex-direction: column; }
+            .slider-group { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -288,66 +364,373 @@
 
     <div class="container">
         <header>
-            <h1>Impacto do Resseguro (Excesso de Danos - XL)</h1>
+            <h1>Excesso de Danos (XL)</h1>
             <p class="subtitle">
-                <strong>Carteira de Seguros de Vida (Cobertura de Morte)</strong><br>
-                Neste modelo Não Proporcional, a seguradora define uma "Prioridade" (retenção máxima por evento ou risco) e o ressegurador arca com o excedente até um certo limite.
+                <strong>Carteira de Danos Patrimoniais (Property)</strong><br>
+                Neste modelo, o resseguro não divide todos os riscos linearmente. Ele age como um "colete salva-vidas" apenas para eventos catastróficos que ultrapassem a <strong>Prioridade</strong> estipulada pela Seguradora, pagando o excedente até o <strong>Limite</strong> contratado.
             </p>
         </header>
 
-        <div class="construction-banner">
-            <div class="construction-icon">🚧</div>
-            <div class="construction-text">
-                <h3>Página em Construção</h3>
-                <p>O simulador de Excesso de Danos (XL) será implementado em breve. A interface abaixo é apenas um protótipo visual (Mockup) da disposição dos elementos.</p>
-            </div>
+        <div class="insight-box">
+            Parâmetros fixos: Prêmio da Carteira de <strong>R$ 60M</strong>, Custo do Tratado XL de <strong>R$ 6M</strong>, e um <strong>Sinistro Catastrófico de R$ 10M</strong>. Os sinistros de atrito (normais) variam mensalmente.
         </div>
 
         <div class="controls">
-            <div class="slider-group">
-                <div class="slider-label">
-                    <span>Prioridade (R$)</span>
-                    <span>R$ 1.000.000</span>
+            <div class="controls-row">
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Prioridade (Retenção da Seguradora)</span>
+                        <span id="prioDisplay">R$ 1.5M</span>
+                    </div>
+                    <input type="range" id="sliderPrio" min="0.5" max="15" step="0.5" value="1.5">
                 </div>
-                <input type="range" min="0" max="100" value="50">
+                
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Limite de Cobertura (Capacidade XL)</span>
+                        <span id="limitDisplay">R$ 15.0M</span>
+                    </div>
+                    <input type="range" id="sliderLimit" min="2" max="25" step="1" value="15">
+                </div>
             </div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); max-width: 300px;">
-                Define o gatilho a partir do qual o ressegurador começa a pagar os sinistros.
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+                Deslize para ver como o gatilho (Prioridade) e o teto (Limite) afetam a proteção da carteira contra o sinistro catastrófico.
             </div>
         </div>
 
-        <div class="scenario-grid">
-            <div class="scenario-card">
-                <div class="mockup-icon">📊</div>
-                <div>Visualização de Sinistros Individuais</div>
-                <div style="font-size: 0.8rem; margin-top: 0.5rem;">Gráfico demonstrando os sinistros que ultrapassam a prioridade.</div>
-            </div>
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('tab-premio', event)">1. Prêmio</button>
+            <button class="tab-btn" onclick="openTab('tab-sinistro', event)">2. Sinistro</button>
+            <button class="tab-btn" onclick="openTab('tab-resultado', event)">3. Resultado</button>
+        </div>
 
-            <div class="scenario-card">
-                <div class="mockup-icon">💰</div>
-                <div>Comparativo de Custo</div>
-                <div style="font-size: 0.8rem; margin-top: 0.5rem;">Custo do prêmio de resseguro XL vs. Sinistros Recuperados.</div>
+        <!-- Tab 1: Prêmio -->
+        <div id="tab-premio" class="tab-content active">
+            <div class="dashboard-grid">
+                <div class="kpi-card">
+                    <div class="kpi-title">Prêmio Bruto (Carteira)</div>
+                    <div class="kpi-value">R$ 60.0M</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Custo do Resseguro XL</div>
+                    <div class="kpi-value red">- R$ 6.0M</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Prêmio Retido</div>
+                    <div class="kpi-value primary">R$ 54.0M</div>
+                </div>
+            </div>
+            <div class="charts-grid-1">
+                <div class="chart-container">
+                    <h3>Análise de Prêmio</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="chartPremio"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Sinistro -->
+        <div id="tab-sinistro" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="kpi-card">
+                    <div class="kpi-title">Sinistros Totais (Bruto)</div>
+                    <div class="kpi-value" id="kpiSinBrutoTot">R$ 18.8M</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Recuperado do XL</div>
+                    <div class="kpi-value primary" id="kpiRecuperado">R$ 8.5M</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Sinistros Retidos</div>
+                    <div class="kpi-value red" id="kpiSinRetidoTot">R$ 10.3M</div>
+                </div>
+            </div>
+            
+            <div class="charts-grid-1">
+                <div class="chart-container">
+                    <h3>Curva de Sinistralidade ao Longo do Ano</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="chartSinistroLinha"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="charts-grid-1">
+                <div class="chart-container">
+                    <h3>Anatomia do Sinistro Catastrófico (O Pico de 10M)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="chartAnatomia"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Resultado -->
+        <div id="tab-resultado" class="tab-content">
+            <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="kpi-card">
+                    <div class="kpi-title">Lucro Sem Resseguro</div>
+                    <div class="kpi-value" id="kpiResultadoSem">R$ 41.2M</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Lucro Com Resseguro XL</div>
+                    <div class="kpi-value green" id="kpiResultadoCom">R$ 43.7M</div>
+                </div>
+            </div>
+            <div class="charts-grid-1">
+                <div class="chart-container">
+                    <h3>Impacto no Balanço da Seguradora</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="chartResultado"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
 
     <script>
-        // Theme Init
+        // Dados Financeiros e Constantes
+        const PREMIO_CARTEIRA = 60000000;  // 60M
+        const CUSTO_XL = 6000000;          // 6M
+        const PREMIO_RETIDO = PREMIO_CARTEIRA - CUSTO_XL; // 54M
+        const SINISTRO_CATASTROFICO = 10000000; // 10M
+
+        // Mês 7 (Julho) terá o sinistro catastrófico
+        const SINISTROS_ATRITO = [800000, 750000, 900000, 850000, 800000, 950000, 800000, 750000, 850000, 900000, 800000, 850000];
+        const SINISTROS_BRUTOS_MES = [...SINISTROS_ATRITO];
+        SINISTROS_BRUTOS_MES[6] += SINISTRO_CATASTROFICO; // Julho tem atrito + catástrofe
+
+        const TOTAL_ATRITO = SINISTROS_ATRITO.reduce((a,b) => a+b, 0); // 10M
+        const TOTAL_SINISTROS_BRUTO = TOTAL_ATRITO + SINISTRO_CATASTROFICO;
+
+        // Formatador
+        const formatM = (val) => `R$ ${(val/1e6).toFixed(1)}M`.replace('.', ',');
+
+        // Elementos UI
+        const sliderPrio = document.getElementById('sliderPrio');
+        const sliderLimit = document.getElementById('sliderLimit');
+        const prioDisplay = document.getElementById('prioDisplay');
+        const limitDisplay = document.getElementById('limitDisplay');
+        
+        // Gráficos
+        let chartPremio, chartSinistroLinha, chartAnatomia, chartResultado;
+
+        function initCharts() {
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#94a3b8';
+            
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top', labels: { boxWidth: 12 } }
+                }
+            };
+            
+            const scaleOptions = {
+                y: {
+                    beginAtZero: true,
+                    grid: { borderDash: [4, 4], color: 'rgba(150, 150, 150, 0.2)' },
+                    title: { display: true, text: 'Milhões (R$)' }
+                },
+                x: { grid: { display: false } }
+            };
+
+            // 1. Chart Prêmio
+            chartPremio = new Chart(document.getElementById('chartPremio').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Prêmio'],
+                    datasets: [
+                        { label: 'Prêmio Bruto', data: [PREMIO_CARTEIRA/1e6], backgroundColor: '#0f172a', borderRadius: 4 },
+                        { label: 'Prêmio Retido', data: [PREMIO_RETIDO/1e6], backgroundColor: '#9d174d', borderRadius: 4 }
+                    ]
+                },
+                options: { ...commonOptions, scales: scaleOptions }
+            });
+
+            // 2. Chart Linha (Sinistros Anuais)
+            chartSinistroLinha = new Chart(document.getElementById('chartSinistroLinha').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Sinistro Bruto',
+                            data: SINISTROS_BRUTOS_MES.map(v => v/1e6),
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Sinistro Retido',
+                            data: [], // Updated in calculate
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: scaleOptions,
+                    interaction: { mode: 'index', intersect: false }
+                }
+            });
+
+            // 3. Chart Anatomia (Barra Empilhada do Pico)
+            chartAnatomia = new Chart(document.getElementById('chartAnatomia').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['O Sinistro Catastrófico de 10M'],
+                    datasets: [
+                        { label: 'Retido (Prioridade)', data: [0], backgroundColor: '#0f172a', borderRadius: 4 },
+                        { label: 'Recuperado (Camada XL)', data: [0], backgroundColor: '#9d174d', borderRadius: 4 },
+                        { label: 'Retido (Excedente Limite)', data: [0], backgroundColor: '#ef4444', borderRadius: 4 }
+                    ]
+                },
+                options: { 
+                    ...commonOptions, 
+                    scales: { 
+                        x: { stacked: true, grid: {display: false} }, 
+                        y: { ...scaleOptions.y, stacked: true } 
+                    }
+                }
+            });
+
+            // 4. Chart Resultado Final
+            chartResultado = new Chart(document.getElementById('chartResultado').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Sem Resseguro', 'Com XL'],
+                    datasets: [{
+                        label: 'Lucro Operacional',
+                        data: [0, 0],
+                        backgroundColor: ['#ef4444', '#10b981'],
+                        borderRadius: 4
+                    }]
+                },
+                options: { ...commonOptions, scales: scaleOptions, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function updateCalculations() {
+            const prioridade = parseFloat(sliderPrio.value) * 1e6;
+            const limite = parseFloat(sliderLimit.value) * 1e6;
+
+            prioDisplay.textContent = formatM(prioridade);
+            limitDisplay.textContent = formatM(limite);
+
+            // Cálculos do XL
+            // O XL atua apenas no evento catastrófico (simplificação). 
+            // Os eventos de atrito não estouram a prioridade (todos estão em 800k).
+            // Apenas para ficar exato, vamos calcular mês a mês.
+            
+            let totalRecuperado = 0;
+            let sinistrosRetidosMes = [];
+
+            for(let i=0; i<12; i++) {
+                let bruto = SINISTROS_BRUTOS_MES[i];
+                let recuperadoMes = 0;
+                
+                if(bruto > prioridade) {
+                    recuperadoMes = Math.min(bruto - prioridade, limite);
+                }
+                
+                totalRecuperado += recuperadoMes;
+                sinistrosRetidosMes.push(bruto - recuperadoMes);
+            }
+
+            const totalRetido = TOTAL_SINISTROS_BRUTO - totalRecuperado;
+
+            // Retenções específicas do Evento de 10M
+            const retidoPrio = Math.min(SINISTRO_CATASTROFICO, prioridade);
+            const recuperadoCat = Math.min(Math.max(0, SINISTRO_CATASTROFICO - prioridade), limite);
+            const excedenteCat = Math.max(0, SINISTRO_CATASTROFICO - (prioridade + limite));
+
+            // Resultados
+            const resultadoSemResseguro = PREMIO_CARTEIRA - TOTAL_SINISTROS_BRUTO;
+            const resultadoComXL = PREMIO_RETIDO - totalRetido;
+
+            // Atualizar DOM KPIs
+            document.getElementById('kpiSinBrutoTot').textContent = formatM(TOTAL_SINISTROS_BRUTO);
+            document.getElementById('kpiRecuperado').textContent = formatM(totalRecuperado);
+            document.getElementById('kpiSinRetidoTot').textContent = formatM(totalRetido);
+            
+            document.getElementById('kpiResultadoSem').textContent = formatM(resultadoSemResseguro);
+            const kpiCom = document.getElementById('kpiResultadoCom');
+            kpiCom.textContent = formatM(resultadoComXL);
+            kpiCom.className = 'kpi-value ' + (resultadoComXL < 0 ? 'red' : 'green');
+
+            // Atualizar Gráfico 2 (Linha)
+            chartSinistroLinha.data.datasets[1].data = sinistrosRetidosMes.map(v => v/1e6);
+            chartSinistroLinha.update();
+
+            // Atualizar Gráfico 3 (Anatomia)
+            chartAnatomia.data.datasets[0].data[0] = retidoPrio / 1e6;
+            chartAnatomia.data.datasets[1].data[0] = recuperadoCat / 1e6;
+            chartAnatomia.data.datasets[2].data[0] = excedenteCat / 1e6;
+            
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            chartAnatomia.data.datasets[0].backgroundColor = isDark ? '#f8fafc' : '#0f172a';
+            chartAnatomia.data.datasets[1].backgroundColor = isDark ? '#f43f5e' : '#9d174d';
+            chartAnatomia.update();
+            
+            // Atualizar Chart 1 (Prêmio colors)
+            chartPremio.data.datasets[0].backgroundColor = isDark ? '#f8fafc' : '#0f172a';
+            chartPremio.data.datasets[1].backgroundColor = isDark ? '#f43f5e' : '#9d174d';
+            chartPremio.update();
+
+            // Atualizar Gráfico 4 (Resultado)
+            chartResultado.data.datasets[0].data = [resultadoSemResseguro / 1e6, resultadoComXL / 1e6];
+            chartResultado.data.datasets[0].backgroundColor = [
+                resultadoSemResseguro < 0 ? '#ef4444' : (isDark ? '#f8fafc' : '#0f172a'),
+                resultadoComXL < 0 ? '#ef4444' : '#10b981'
+            ];
+            chartResultado.update();
+        }
+
+        function openTab(tabName, event) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            // Corrige possível problema de renderização do chartjs em abas ocultas
+            const charts = {
+                'tab-premio': chartPremio,
+                'tab-sinistro': chartSinistroLinha,
+                'tab-resultado': chartResultado
+            };
+            if(charts[tabName]) charts[tabName].update();
+            if(tabName === 'tab-sinistro') chartAnatomia.update();
+        }
+
+        sliderPrio.addEventListener('input', updateCalculations);
+        sliderLimit.addEventListener('input', updateCalculations);
+
+        window.onload = () => {
+            initCharts();
+            updateCalculations();
+        };
+
+        // Theme and Menu
         const currentTheme = localStorage.getItem('theme') || 'light';
         const themeBtn = document.getElementById('themeBtn');
-        
         if (currentTheme === 'dark') {
             document.body.setAttribute('data-theme', 'dark');
             if (themeBtn) themeBtn.textContent = '☀️ Modo Claro';
         }
 
-        // Menu Toggle
-        function toggleMenu() {
-            document.getElementById('menuOverlay').classList.toggle('active');
-        }
+        function toggleMenu() { document.getElementById('menuOverlay').classList.toggle('active'); }
 
-        // Theme Toggle
         function toggleTheme() {
             const isDark = document.body.getAttribute('data-theme') === 'dark';
             if (isDark) {
@@ -359,6 +742,7 @@
                 localStorage.setItem('theme', 'dark');
                 if (themeBtn) themeBtn.textContent = '☀️ Modo Claro';
             }
+            updateCalculations(); 
         }
     </script>
 </body>
