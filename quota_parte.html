@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Impacto do Resseguro - Quota Parte</title>
+    <title>Quota Parte (QS)</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -358,11 +358,11 @@
 
     <div class="container">
         <header>
-            <h1>Impacto do Resseguro (Quota Parte)</h1>
+            <h1>Quota Parte (QS)</h1>
             <p class="subtitle">
-                <strong>Carteira de Seguros de Vida (Cobertura de Morte) - Base de 1 ano de prêmio emitido.</strong><br>
-                Comparativo entre a emissão apenas de apólices com IS Menor que 1M (Sem Resseguro) 
-                vs. expansão para toda a carteira, incluindo IS Maior que 1M (Com Resseguro).
+                <strong>Produto: Carteira de Seguro de Vida</strong><br>
+                <strong>Cobertura: Morte</strong><br>
+                Este comparativo demonstra como o resseguro atua como um facilitador de negócios. O órgão regulador (SUSEP) define um limite máximo de Importância Segurada (IS) que a seguradora pode reter sozinha. Com o Quota Parte, torna-se possível ultrapassar essa barreira regulatória, comercializando apólices com IS superior ao teto da SUSEP e alavancando o crescimento da carteira.
             </p>
         </header>
 
@@ -372,17 +372,17 @@
                     <span>Cessão do Quota Parte (%)</span>
                     <span id="qsValueDisplay">50%</span>
                 </div>
-                <input type="range" id="qsSlider" min="0" max="95" value="50" step="5">
+                <input type="range" id="qsSlider" min="30" max="95" value="50" step="5">
             </div>
             <div style="font-size: 0.85rem; color: var(--text-muted); max-width: 300px;">
-                Ajuste o percentual cedido ao ressegurador para simular o <strong>Cenário 2</strong>.
+                Ajuste o percentual cedido ao ressegurador para simular o cenário <strong>Com Resseguro</strong>.
             </div>
         </div>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('premio')">Prêmio</button>
-            <button class="tab-btn" onclick="openTab('sinistro')">Sinistro</button>
-            <button class="tab-btn" onclick="openTab('resultado')">Resultado</button>
+            <button class="tab-btn active" onclick="openTab('premio')">1. Prêmio</button>
+            <button class="tab-btn" onclick="openTab('sinistro')">2. Sinistro</button>
+            <button class="tab-btn" onclick="openTab('resultado')">3. Resultado</button>
         </div>
 
         <!-- TAB: PRÊMIO -->
@@ -394,8 +394,8 @@
             
             <div class="scenario-grid">
                 <div class="scenario-card">
-                    <div class="scenario-header">Cenário 1: Sem Resseguro</div>
-                    <div class="scenario-desc">Emissão <strong>apenas</strong> de apólices IS < 1M.</div>
+                    <div class="scenario-header">Sem Resseguro</div>
+                    <div class="scenario-desc">Emissão restrita às apólices com IS limitada ao teto estabelecido pela SUSEP.</div>
                     
                     <div class="kpi-group">
                         <div class="kpi-label">Qtd Apólices Emitidas</div>
@@ -416,8 +416,8 @@
                 </div>
 
                 <div class="scenario-card highlight">
-                    <div class="scenario-header">Cenário 2: Com Resseguro</div>
-                    <div class="scenario-desc">Emissão de <strong>todas</strong> as apólices (IS < 1M e IS > 1M).</div>
+                    <div class="scenario-header">Com Resseguro</div>
+                    <div class="scenario-desc">Expansão comercial e emissão de apólices com IS acima do limite da SUSEP.</div>
                     
                     <div class="kpi-group">
                         <div class="kpi-label">Qtd Apólices Emitidas</div>
@@ -452,8 +452,8 @@
 
             <div class="scenario-grid">
                 <div class="scenario-card">
-                    <div class="scenario-header">Cenário 1: Sem Resseguro</div>
-                    <div class="scenario-desc">Emissão <strong>apenas</strong> de apólices IS < 1M.</div>
+                    <div class="scenario-header">Sem Resseguro</div>
+                    <div class="scenario-desc">Emissão restrita às apólices com IS limitada ao teto estabelecido pela SUSEP.</div>
                     
                     <div class="kpi-group">
                         <div class="kpi-label">Qtd Apólices Sinistradas</div>
@@ -474,8 +474,8 @@
                 </div>
 
                 <div class="scenario-card highlight">
-                    <div class="scenario-header">Cenário 2: Com Resseguro</div>
-                    <div class="scenario-desc">Emissão de <strong>todas</strong> as apólices (IS < 1M e IS > 1M).</div>
+                    <div class="scenario-header">Com Resseguro</div>
+                    <div class="scenario-desc">Expansão comercial e emissão de apólices com IS acima do limite da SUSEP.</div>
                     
                     <div class="kpi-group">
                         <div class="kpi-label">Qtd Apólices Sinistradas</div>
@@ -510,8 +510,8 @@
 
             <div class="scenario-grid">
                 <div class="scenario-card">
-                    <div class="scenario-header">Cenário 1: Sem Resseguro</div>
-                    <div class="scenario-desc">Emissão <strong>apenas</strong> de apólices IS < 1M.</div>
+                    <div class="scenario-header">Sem Resseguro</div>
+                    <div class="scenario-desc">Emissão restrita às apólices com IS limitada ao teto estabelecido pela SUSEP.</div>
                     
                     <div class="kpi-group">
                         <div class="kpi-label">Prêmio Retido</div>
@@ -528,8 +528,8 @@
                 </div>
 
                 <div class="scenario-card highlight">
-                    <div class="scenario-header">Cenário 2: Com Resseguro</div>
-                    <div class="scenario-desc">Emissão de <strong>todas</strong> as apólices (IS < 1M e IS > 1M).</div>
+                    <div class="scenario-header">Com Resseguro</div>
+                    <div class="scenario-desc">Expansão comercial e emissão de apólices com IS acima do limite da SUSEP.</div>
                     
                     <div class="kpi-group">
                         <div class="kpi-label">Prêmio Retido</div>
@@ -555,12 +555,10 @@
 
     <script>
         // Data Configuration
-        // Scenario 1: Only < 1M
         const SCENARIO1_PREMIO = 3600200;
         const SCENARIO1_SINISTRO = 260000;
         const SCENARIO1_RESULTADO = SCENARIO1_PREMIO - SCENARIO1_SINISTRO;
 
-        // Scenario 2: All Policies (<1M + >1M)
         const PREMIO_MAIOR_1M = 9800700;
         const SINISTRO_MAIOR_1M = 3000000;
         
@@ -579,7 +577,6 @@
 
         function initCharts() {
             Chart.defaults.font.family = "'Inter', sans-serif";
-            // Lighter default text color for dark mode visibility
             Chart.defaults.color = '#94a3b8'; 
             
             const commonOptions = {
@@ -596,7 +593,7 @@
                         beginAtZero: true,
                         grid: { 
                             borderDash: [4, 4],
-                            color: 'rgba(150, 150, 150, 0.2)' // Visível em ambos os modos
+                            color: 'rgba(150, 150, 150, 0.2)' 
                         },
                         title: {
                             display: true,
@@ -614,7 +611,7 @@
             chartPremio = new Chart(ctxPremio, {
                 type: 'bar',
                 data: {
-                    labels: ['Cenário 1 (Sem Resseguro)', 'Cenário 2 (Com Resseguro)'],
+                    labels: ['Sem Resseguro', 'Com Resseguro'],
                     datasets: [
                         {
                             label: 'Prêmio Retido',
@@ -638,7 +635,7 @@
             chartSinistro = new Chart(ctxSinistro, {
                 type: 'bar',
                 data: {
-                    labels: ['Cenário 1 (Sem Resseguro)', 'Cenário 2 (Com Resseguro)'],
+                    labels: ['Sem Resseguro', 'Com Resseguro'],
                     datasets: [
                         {
                             label: 'Sinistro Retido',
@@ -662,17 +659,22 @@
             chartResultado = new Chart(ctxResultado, {
                 type: 'bar',
                 data: {
-                    labels: ['Cenário 1 (Sem Resseguro)', 'Cenário 2 (Com Resseguro)'],
+                    labels: ['Sem Resseguro', 'Com Resseguro'],
                     datasets: [
                         {
                             label: 'Resultado Retido (Lucro)',
                             data: [SCENARIO1_RESULTADO/1e6, (SCENARIO2_PREMIO_BRUTO - SCENARIO2_SINISTRO_BRUTO)/1e6],
-                            backgroundColor: '#059669',
+                            backgroundColor: ['#64748b', '#059669'],
                             borderRadius: 4
                         }
                     ]
                 },
-                options: commonOptions
+                options: {
+                    ...commonOptions,
+                    plugins: {
+                        legend: { display: false } // Remove a legenda superior deste gráfico
+                    }
+                }
             });
         }
 

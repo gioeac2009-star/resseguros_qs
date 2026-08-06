@@ -51,6 +51,7 @@
             display: flex;
             justify-content: center;
             transition: color 0.3s;
+            position: relative; 
         }
 
         @keyframes gradientShift {
@@ -59,7 +60,18 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Navbar & Menu */
+        /* Canvas de Partículas */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Navbar */
         .navbar {
             position: absolute;
             top: 0;
@@ -71,84 +83,22 @@
             z-index: 1000;
         }
 
-        .hamburger-btn {
+        .theme-toggle-btn-header {
             background: var(--surface-color);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 0.5rem 0.75rem;
+            padding: 0.5rem 1rem;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
         }
 
-        .hamburger-btn:hover {
-            border-color: var(--primary);
-        }
-
-        .menu-overlay {
-            position: fixed;
-            top: 0;
-            right: -300px;
-            width: 300px;
-            height: 100vh;
-            background-color: var(--surface-color);
-            border-left: 1px solid var(--border-color);
-            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-            transition: right 0.3s ease;
-            z-index: 999;
-            padding: 5rem 2rem 2rem 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .menu-overlay.active {
-            right: 0;
-        }
-
-        .menu-link {
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 1.125rem;
-            font-weight: 500;
-            padding: 0.75rem;
-            border-radius: 6px;
-            transition: background-color 0.2s;
-        }
-
-        .menu-link:hover {
-            background-color: rgba(59, 130, 246, 0.1);
-            color: var(--primary);
-        }
-
-        .theme-toggle-container {
-            margin-top: 2rem;
-            border-top: 1px solid var(--border-color);
-            padding-top: 1rem;
-        }
-
-        .theme-toggle-btn {
-            width: 100%;
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 0.75rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .theme-toggle-btn:hover {
+        .theme-toggle-btn-header:hover {
             border-color: var(--primary);
             background-color: rgba(59, 130, 246, 0.1);
         }
@@ -269,21 +219,12 @@
 </head>
 <body>
 
+    <!-- Canvas para Partículas de Fundo -->
+    <canvas id="particleCanvas"></canvas>
+
     <!-- Navbar -->
     <div class="navbar">
-        <button class="hamburger-btn" onclick="toggleMenu()">☰</button>
-    </div>
-
-    <!-- Menu Overlay -->
-    <div class="menu-overlay" id="menuOverlay">
-        <button class="hamburger-btn" style="position: absolute; top: 1rem; right: 2rem; padding: 0.5rem 1rem;" onclick="toggleMenu()">✕</button>
-        <a href="index.html" class="menu-link">🏠 Página Inicial</a>
-        <a href="quota_parte.html" class="menu-link">⚖️ Quota Parte</a>
-        <a href="excesso_danos.html" class="menu-link">🛡️ Excesso de Danos</a>
-        
-        <div class="theme-toggle-container">
-            <button class="theme-toggle-btn" id="themeBtn" onclick="toggleTheme()">🌙 Modo Escuro</button>
-        </div>
+        <button class="theme-toggle-btn-header" id="themeBtn" onclick="toggleTheme()">🌙 Modo Escuro</button>
     </div>
 
     <div class="container">
@@ -303,7 +244,7 @@
                 <div class="card-icon">⚖️</div>
                 <div class="card-title">Quota Parte (QS)</div>
                 <div class="card-desc">
-                    Simule a cessão proporcional de prêmios e sinistros. Descubra como o tratado Quota Parte ajuda 
+                    Simule a cessão proporcional de prêmios e sinistros. Descubra como o Quota Parte ajuda 
                     a seguradora a acessar o mercado de grandes riscos (IS > 1M) limitando sua exposição financeira.
                 </div>
                 <div class="btn">Acessar Simulador</div>
@@ -324,6 +265,9 @@
     </div>
 
     <script>
+        // Variável global para a cor das partículas baseada no tema
+        let particleColor = 'rgba(37, 99, 235, 0.3)'; 
+
         // Init Theme
         const currentTheme = localStorage.getItem('theme') || 'light';
         const themeBtn = document.getElementById('themeBtn');
@@ -331,11 +275,7 @@
         if (currentTheme === 'dark') {
             document.body.setAttribute('data-theme', 'dark');
             themeBtn.textContent = '☀️ Modo Claro';
-        }
-
-        // Menu Toggle
-        function toggleMenu() {
-            document.getElementById('menuOverlay').classList.toggle('active');
+            particleColor = 'rgba(255, 255, 255, 0.25)'; // Branco translúcido para dark mode
         }
 
         // Theme Toggle
@@ -345,12 +285,119 @@
                 document.body.removeAttribute('data-theme');
                 localStorage.setItem('theme', 'light');
                 themeBtn.textContent = '🌙 Modo Escuro';
+                particleColor = 'rgba(37, 99, 235, 0.3)'; // Azul translúcido para light mode
             } else {
                 document.body.setAttribute('data-theme', 'dark');
                 localStorage.setItem('theme', 'dark');
                 themeBtn.textContent = '☀️ Modo Claro';
+                particleColor = 'rgba(255, 255, 255, 0.25)';
             }
         }
+
+        // --- SISTEMA DE PARTÍCULAS (Antigravity Style) ---
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        // Rastreamento do Mouse
+        const mouse = {
+            x: null,
+            y: null,
+            radius: 150 // Raio de atração gravitacional
+        };
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        window.addEventListener('mouseout', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5; // Tamanho entre 0.5 e 2.5
+                this.vx = (Math.random() - 0.5) * 0.8; // Velocidade base X
+                this.vy = (Math.random() - 0.5) * 0.8; // Velocidade base Y
+            }
+            
+            draw() {
+                ctx.fillStyle = particleColor;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+            
+            update() {
+                // Movimento base
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Efeito infinito (wrap-around) nas bordas
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+
+                // Interação com o Mouse (Atração)
+                if (mouse.x != null && mouse.y != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < mouse.radius) {
+                        // Calcula a força de atração: mais forte quanto mais perto
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        // O fator 0.4 controla a "suavidade" da gravidade
+                        const pullX = (dx / distance) * force * 0.4; 
+                        const pullY = (dy / distance) * force * 0.4;
+                        
+                        this.x += pullX;
+                        this.y += pullY;
+                    }
+                }
+                this.draw();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Densidade responsiva: menos partículas em telas menores
+            let numberOfParticles = (canvas.width * canvas.height) / 10000;
+            
+            // Limite de segurança para performance
+            if(numberOfParticles > 200) numberOfParticles = 200; 
+            
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        // Inicializar a animação
+        initParticles();
+        animateParticles();
     </script>
 </body>
 </html>

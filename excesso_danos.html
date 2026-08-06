@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excesso de Danos (XL) - Resseguro</title>
+    <title>Excesso de Danos (XoL) - Resseguro</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -275,6 +275,8 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
         }
 
         .kpi-title {
@@ -296,11 +298,35 @@
         .kpi-value.red { color: var(--danger); }
         .kpi-value.primary { color: var(--primary); }
 
-        .charts-grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        /* Breakdown Table for Resultados */
+        .breakdown {
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .breakdown-row .red {
+            color: var(--danger);
+        }
+
+        .breakdown-row.total {
+            font-weight: 600;
+            color: var(--text-main);
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
         }
         
         .charts-grid-1 {
@@ -336,7 +362,6 @@
 
         @media (max-width: 768px) {
             .dashboard-grid { grid-template-columns: 1fr; }
-            .charts-grid-2 { grid-template-columns: 1fr; }
             .controls-row { flex-direction: column; }
             .slider-group { width: 100%; }
         }
@@ -364,15 +389,16 @@
 
     <div class="container">
         <header>
-            <h1>Excesso de Danos (XL)</h1>
+            <h1>Excesso de Danos (XoL)</h1>
             <p class="subtitle">
-                <strong>Carteira de Danos Patrimoniais (Property)</strong><br>
+                <strong>Produto: Carteira de Danos Patrimoniais</strong><br>
+                <strong>Cobertura: Básica</strong><br>
                 Neste modelo, o resseguro não divide todos os riscos linearmente. Ele age como um "colete salva-vidas" apenas para eventos catastróficos que ultrapassem a <strong>Prioridade</strong> estipulada pela Seguradora, pagando o excedente até o <strong>Limite</strong> contratado.
             </p>
         </header>
 
         <div class="insight-box">
-            Parâmetros fixos: Prêmio da Carteira de <strong>R$ 60M</strong>, Custo do Tratado XL de <strong>R$ 6M</strong>, e um <strong>Sinistro Catastrófico de R$ 10M</strong>. Os sinistros de atrito (normais) variam mensalmente.
+            Prêmio da Carteira fixo em <strong>R$ 60M</strong>. O <strong>Prêmio do Contrato XoL é dinâmico</strong> e varia conforme você ajusta a Prioridade e o Limite. Temos <strong>dois Sinistros Catastróficos: R$ 7M em Fev e R$ 10M em Jul</strong>. Os sinistros de atrito variam mensalmente.
         </div>
 
         <div class="controls">
@@ -382,7 +408,7 @@
                         <span>Prioridade (Retenção da Seguradora)</span>
                         <span id="prioDisplay">R$ 1.5M</span>
                     </div>
-                    <input type="range" id="sliderPrio" min="0.5" max="15" step="0.5" value="1.5">
+                    <input type="range" id="sliderPrio" min="0.5" max="5" step="0.5" value="1.5">
                 </div>
                 
                 <div class="slider-group">
@@ -390,11 +416,11 @@
                         <span>Limite de Cobertura (Capacidade XL)</span>
                         <span id="limitDisplay">R$ 15.0M</span>
                     </div>
-                    <input type="range" id="sliderLimit" min="2" max="25" step="1" value="15">
+                    <input type="range" id="sliderLimit" min="10" max="25" step="1" value="15">
                 </div>
             </div>
             <div style="font-size: 0.85rem; color: var(--text-muted);">
-                Deslize para ver como o gatilho (Prioridade) e o teto (Limite) afetam a proteção da carteira contra o sinistro catastrófico.
+                Deslize para ver como a Prioridade e o Limite afetam a proteção e o custo do resseguro.
             </div>
         </div>
 
@@ -414,11 +440,11 @@
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-title">Custo do Resseguro XL</div>
-                    <div class="kpi-value red">- R$ 6.0M</div>
+                    <div class="kpi-value red" id="kpiCustoXL">- R$ 6.0M</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-title">Prêmio Retido</div>
-                    <div class="kpi-value primary">R$ 54.0M</div>
+                    <div class="kpi-value primary" id="kpiPremioRetido">R$ 54.0M</div>
                 </div>
             </div>
             <div class="charts-grid-1">
@@ -436,15 +462,15 @@
             <div class="dashboard-grid">
                 <div class="kpi-card">
                     <div class="kpi-title">Sinistros Totais (Bruto)</div>
-                    <div class="kpi-value" id="kpiSinBrutoTot">R$ 18.8M</div>
+                    <div class="kpi-value" id="kpiSinBrutoTot">R$ 0.0M</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-title">Recuperado do XL</div>
-                    <div class="kpi-value primary" id="kpiRecuperado">R$ 8.5M</div>
+                    <div class="kpi-value primary" id="kpiRecuperado">R$ 0.0M</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-title">Sinistros Retidos</div>
-                    <div class="kpi-value red" id="kpiSinRetidoTot">R$ 10.3M</div>
+                    <div class="kpi-value red" id="kpiSinRetidoTot">R$ 0.0M</div>
                 </div>
             </div>
             
@@ -456,27 +482,52 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="charts-grid-1">
-                <div class="chart-container">
-                    <h3>Anatomia do Sinistro Catastrófico (O Pico de 10M)</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="chartAnatomia"></canvas>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Tab 3: Resultado -->
         <div id="tab-resultado" class="tab-content">
             <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="kpi-card">
-                    <div class="kpi-title">Lucro Sem Resseguro</div>
-                    <div class="kpi-value" id="kpiResultadoSem">R$ 41.2M</div>
+                    <div class="kpi-title">Resultado Sem Resseguro</div>
+                    <div class="kpi-value" id="kpiResultadoSem">R$ 0.0M</div>
+                    
+                    <div class="breakdown">
+                        <div class="breakdown-row">
+                            <span>Prêmio Bruto (+)</span>
+                            <span id="brkSemPremio">R$ 60.0M</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>Sinistro Bruto (-)</span>
+                            <span class="red" id="brkSemSinistro">- R$ 0.0M</span>
+                        </div>
+                        <div class="breakdown-row total">
+                            <span>Lucro Operacional (=)</span>
+                            <span id="brkSemResult">R$ 0.0M</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-title">Lucro Com Resseguro XL</div>
-                    <div class="kpi-value green" id="kpiResultadoCom">R$ 43.7M</div>
+                    <div class="kpi-title">Resultado Com Resseguro</div>
+                    <div class="kpi-value green" id="kpiResultadoCom">R$ 0.0M</div>
+                    
+                    <div class="breakdown">
+                        <div class="breakdown-row">
+                            <span>Prêmio Bruto (+)</span>
+                            <span id="brkComPremio">R$ 60.0M</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>Prêmio do XoL (-)</span>
+                            <span class="red" id="brkComCustoXL">- R$ 0.0M</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>Sinistro Retido (-)</span>
+                            <span class="red" id="brkComSinistroRet">- R$ 0.0M</span>
+                        </div>
+                        <div class="breakdown-row total">
+                            <span>Lucro Operacional (=)</span>
+                            <span id="brkComResult">R$ 0.0M</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="charts-grid-1">
@@ -492,19 +543,30 @@
     </div>
 
     <script>
-        // Dados Financeiros e Constantes
+        // Dados Financeiros Fixos da Carteira
         const PREMIO_CARTEIRA = 60000000;  // 60M
-        const CUSTO_XL = 6000000;          // 6M
-        const PREMIO_RETIDO = PREMIO_CARTEIRA - CUSTO_XL; // 54M
-        const SINISTRO_CATASTROFICO = 10000000; // 10M
+        
+        // Constantes de Sensibilidade para Precificação Dinâmica do XoL
+        const CUSTO_XL_BASE = 2000000;     // Base de prêmio (R$ 2M)
+        const MAX_PRIORIDADE = 15000000;   // Teto da prioridade no slider
+        const MIN_LIMITE = 2000000;        // Piso do limite no slider
+        const FATOR_PRIORIDADE = 0.20;     // +20% do delta por 1M reduzido na prioridade
+        const FATOR_LIMITE = 0.15;         // +15% do delta por 1M adicionado ao limite
 
-        // Mês 7 (Julho) terá o sinistro catastrófico
-        const SINISTROS_ATRITO = [800000, 750000, 900000, 850000, 800000, 950000, 800000, 750000, 850000, 900000, 800000, 850000];
+        // Sinistros
+        const SINISTRO_CATASTROFICO_JUL = 10000000; // 10M
+        const SINISTRO_CATASTROFICO_FEV = 7000000;  // 7M
+
+        const SINISTROS_ATRITO = [800000, 0, 900000, 850000, 800000, 950000, 0, 750000, 850000, 900000, 800000, 850000];
         const SINISTROS_BRUTOS_MES = [...SINISTROS_ATRITO];
-        SINISTROS_BRUTOS_MES[6] += SINISTRO_CATASTROFICO; // Julho tem atrito + catástrofe
+        
+        // Mês 2 (Fevereiro - índice 1) terá o sinistro catastrófico de 7M
+        SINISTROS_BRUTOS_MES[1] += SINISTRO_CATASTROFICO_FEV;
+        // Mês 7 (Julho - índice 6) terá o sinistro catastrófico de 10M
+        SINISTROS_BRUTOS_MES[6] += SINISTRO_CATASTROFICO_JUL; 
 
         const TOTAL_ATRITO = SINISTROS_ATRITO.reduce((a,b) => a+b, 0); // 10M
-        const TOTAL_SINISTROS_BRUTO = TOTAL_ATRITO + SINISTRO_CATASTROFICO;
+        const TOTAL_SINISTROS_BRUTO = TOTAL_ATRITO + SINISTRO_CATASTROFICO_JUL + SINISTRO_CATASTROFICO_FEV;
 
         // Formatador
         const formatM = (val) => `R$ ${(val/1e6).toFixed(1)}M`.replace('.', ',');
@@ -516,7 +578,7 @@
         const limitDisplay = document.getElementById('limitDisplay');
         
         // Gráficos
-        let chartPremio, chartSinistroLinha, chartAnatomia, chartResultado;
+        let chartPremio, chartSinistroLinha, chartResultado;
 
         function initCharts() {
             Chart.defaults.font.family = "'Inter', sans-serif";
@@ -546,13 +608,13 @@
                     labels: ['Prêmio'],
                     datasets: [
                         { label: 'Prêmio Bruto', data: [PREMIO_CARTEIRA/1e6], backgroundColor: '#0f172a', borderRadius: 4 },
-                        { label: 'Prêmio Retido', data: [PREMIO_RETIDO/1e6], backgroundColor: '#9d174d', borderRadius: 4 }
+                        { label: 'Prêmio Retido', data: [0], backgroundColor: '#9d174d', borderRadius: 4 }
                     ]
                 },
                 options: { ...commonOptions, scales: scaleOptions }
             });
 
-            // 2. Chart Linha (Sinistros Anuais)
+            // 2. Chart Linha (Sinistros Anuais) com Linha de Prioridade Adicionada
             chartSinistroLinha = new Chart(document.getElementById('chartSinistroLinha').getContext('2d'), {
                 type: 'line',
                 data: {
@@ -575,6 +637,16 @@
                             borderWidth: 2,
                             tension: 0.3,
                             fill: true
+                        },
+                        {
+                            label: 'Prioridade',
+                            data: [], // Updated in calculate
+                            borderColor: '#64748b',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false,
+                            tension: 0
                         }
                     ]
                 },
@@ -585,31 +657,11 @@
                 }
             });
 
-            // 3. Chart Anatomia (Barra Empilhada do Pico)
-            chartAnatomia = new Chart(document.getElementById('chartAnatomia').getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: ['O Sinistro Catastrófico de 10M'],
-                    datasets: [
-                        { label: 'Retido (Prioridade)', data: [0], backgroundColor: '#0f172a', borderRadius: 4 },
-                        { label: 'Recuperado (Camada XL)', data: [0], backgroundColor: '#9d174d', borderRadius: 4 },
-                        { label: 'Retido (Excedente Limite)', data: [0], backgroundColor: '#ef4444', borderRadius: 4 }
-                    ]
-                },
-                options: { 
-                    ...commonOptions, 
-                    scales: { 
-                        x: { stacked: true, grid: {display: false} }, 
-                        y: { ...scaleOptions.y, stacked: true } 
-                    }
-                }
-            });
-
-            // 4. Chart Resultado Final
+            // 3. Chart Resultado Final
             chartResultado = new Chart(document.getElementById('chartResultado').getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: ['Sem Resseguro', 'Com XL'],
+                    labels: ['Sem Resseguro', 'Com Resseguro'],
                     datasets: [{
                         label: 'Lucro Operacional',
                         data: [0, 0],
@@ -628,11 +680,16 @@
             prioDisplay.textContent = formatM(prioridade);
             limitDisplay.textContent = formatM(limite);
 
-            // Cálculos do XL
-            // O XL atua apenas no evento catastrófico (simplificação). 
-            // Os eventos de atrito não estouram a prioridade (todos estão em 800k).
-            // Apenas para ficar exato, vamos calcular mês a mês.
+            // --- LÓGICA DE PRECIFICAÇÃO DO XoL ---
+            // O prêmio fica mais caro conforme a seguradora retém menos (baixa prioridade) ou compra mais capacidade (alto limite)
+            const custoXL = CUSTO_XL_BASE + ((MAX_PRIORIDADE - prioridade) * FATOR_PRIORIDADE) + ((limite - MIN_LIMITE) * FATOR_LIMITE);
+            const premioRetido = PREMIO_CARTEIRA - custoXL;
             
+            // Atualiza Tab 1 KPIs
+            document.getElementById('kpiCustoXL').textContent = '- ' + formatM(custoXL);
+            document.getElementById('kpiPremioRetido').textContent = formatM(premioRetido);
+
+            // --- CÁLCULO DE RECUPERAÇÃO DE SINISTROS ---
             let totalRecuperado = 0;
             let sinistrosRetidosMes = [];
 
@@ -650,45 +707,43 @@
 
             const totalRetido = TOTAL_SINISTROS_BRUTO - totalRecuperado;
 
-            // Retenções específicas do Evento de 10M
-            const retidoPrio = Math.min(SINISTRO_CATASTROFICO, prioridade);
-            const recuperadoCat = Math.min(Math.max(0, SINISTRO_CATASTROFICO - prioridade), limite);
-            const excedenteCat = Math.max(0, SINISTRO_CATASTROFICO - (prioridade + limite));
-
-            // Resultados
+            // --- RESULTADOS OPERACIONAIS ---
             const resultadoSemResseguro = PREMIO_CARTEIRA - TOTAL_SINISTROS_BRUTO;
-            const resultadoComXL = PREMIO_RETIDO - totalRetido;
+            const resultadoComXL = premioRetido - totalRetido;
 
-            // Atualizar DOM KPIs
+            // Atualizar Tab 2 KPIs
             document.getElementById('kpiSinBrutoTot').textContent = formatM(TOTAL_SINISTROS_BRUTO);
             document.getElementById('kpiRecuperado').textContent = formatM(totalRecuperado);
             document.getElementById('kpiSinRetidoTot').textContent = formatM(totalRetido);
             
+            // Atualizar Tab 3 KPIs
             document.getElementById('kpiResultadoSem').textContent = formatM(resultadoSemResseguro);
             const kpiCom = document.getElementById('kpiResultadoCom');
             kpiCom.textContent = formatM(resultadoComXL);
             kpiCom.className = 'kpi-value ' + (resultadoComXL < 0 ? 'red' : 'green');
 
-            // Atualizar Gráfico 2 (Linha)
-            chartSinistroLinha.data.datasets[1].data = sinistrosRetidosMes.map(v => v/1e6);
-            chartSinistroLinha.update();
+            // --- ATUALIZAR TABELAS DE BREAKDOWN (Aba 3) ---
+            document.getElementById('brkSemSinistro').textContent = '- ' + formatM(TOTAL_SINISTROS_BRUTO);
+            document.getElementById('brkSemResult').textContent = formatM(resultadoSemResseguro);
+            
+            document.getElementById('brkComCustoXL').textContent = '- ' + formatM(custoXL);
+            document.getElementById('brkComSinistroRet').textContent = '- ' + formatM(totalRetido);
+            document.getElementById('brkComResult').textContent = formatM(resultadoComXL);
 
-            // Atualizar Gráfico 3 (Anatomia)
-            chartAnatomia.data.datasets[0].data[0] = retidoPrio / 1e6;
-            chartAnatomia.data.datasets[1].data[0] = recuperadoCat / 1e6;
-            chartAnatomia.data.datasets[2].data[0] = excedenteCat / 1e6;
-            
+            // --- ATUALIZAR GRÁFICOS ---
             const isDark = document.body.getAttribute('data-theme') === 'dark';
-            chartAnatomia.data.datasets[0].backgroundColor = isDark ? '#f8fafc' : '#0f172a';
-            chartAnatomia.data.datasets[1].backgroundColor = isDark ? '#f43f5e' : '#9d174d';
-            chartAnatomia.update();
+
+            // Atualiza linha de sinistros retidos e a nova linha dinâmica de Prioridade
+            chartSinistroLinha.data.datasets[1].data = sinistrosRetidosMes.map(v => v/1e6);
+            chartSinistroLinha.data.datasets[2].data = Array(12).fill(prioridade / 1e6);
+            chartSinistroLinha.data.datasets[2].borderColor = isDark ? '#94a3b8' : '#64748b'; // Ajusta cor da linha ao tema
+            chartSinistroLinha.update();
             
-            // Atualizar Chart 1 (Prêmio colors)
             chartPremio.data.datasets[0].backgroundColor = isDark ? '#f8fafc' : '#0f172a';
+            chartPremio.data.datasets[1].data = [premioRetido / 1e6];
             chartPremio.data.datasets[1].backgroundColor = isDark ? '#f43f5e' : '#9d174d';
             chartPremio.update();
 
-            // Atualizar Gráfico 4 (Resultado)
             chartResultado.data.datasets[0].data = [resultadoSemResseguro / 1e6, resultadoComXL / 1e6];
             chartResultado.data.datasets[0].backgroundColor = [
                 resultadoSemResseguro < 0 ? '#ef4444' : (isDark ? '#f8fafc' : '#0f172a'),
@@ -710,7 +765,6 @@
                 'tab-resultado': chartResultado
             };
             if(charts[tabName]) charts[tabName].update();
-            if(tabName === 'tab-sinistro') chartAnatomia.update();
         }
 
         sliderPrio.addEventListener('input', updateCalculations);
